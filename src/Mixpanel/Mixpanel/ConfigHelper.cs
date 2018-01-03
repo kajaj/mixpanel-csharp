@@ -18,7 +18,7 @@ namespace Mixpanel
             return new DefaultJsonSerializer().Serialize;
         }
 
-        public static Func<string, string, bool> GetHttpPostFn(MixpanelConfig config)
+        public static Func<string, string, string, bool> GetHttpPostFn(MixpanelConfig config)
         {
             if (config != null && config.HttpPostFn != null)
                 return config.HttpPostFn;

@@ -17,10 +17,15 @@ namespace Mixpanel
         static readonly HttpClient HttpClient = new HttpClient();
 #endif
 
-        public bool Post(string url, string formData)
+        public bool Post(string url, string formData, string api_key)
         {
 #if HTTP_CLIENT
-            HttpResponseMessage responseMessage = HttpClient.PostAsync(url, new StringContent(formData)).Result;
+            if (!string.IsNullOrWhiteSpace(api_key))
+                formData += "&api_key=" + api_key;
+
+            var httpContent = new StringContent(formData);
+
+            HttpResponseMessage responseMessage = HttpClient.PostAsync(url, httpContent).Result;
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return false;

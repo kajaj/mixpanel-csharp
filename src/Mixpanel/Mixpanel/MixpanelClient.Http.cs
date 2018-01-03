@@ -105,13 +105,13 @@ namespace Mixpanel
             }
         }
 
-        private bool HttpPost(MixpanelMessageEndpoint endpoint, string messageBody)
+        private bool HttpPost(MixpanelMessageEndpoint endpoint, string messageBody, string api_key)
         {
             string url = GenerateUrl(endpoint);
             try
             {
                 var httpPostFn = ConfigHelper.GetHttpPostFn(_config);
-                return httpPostFn(url, messageBody);
+                return httpPostFn(url, messageBody, api_key);
             }
             catch (Exception e)
             {
@@ -140,7 +140,7 @@ namespace Mixpanel
 #endif
 
         private bool SendMessageInternal(
-            Func<object> getMessageDataFn, MixpanelMessageEndpoint endpoint, MessageKind messageKind)
+            Func<object> getMessageDataFn, MixpanelMessageEndpoint endpoint, MessageKind messageKind, string api_key)
         {
             string messageBody = GetMessageBody(getMessageDataFn, messageKind);
             if (messageBody == null)
@@ -148,11 +148,11 @@ namespace Mixpanel
                 return false;
             }
 
-            return HttpPost(endpoint, messageBody);
+            return HttpPost(endpoint, messageBody, api_key);
         }
 
         private bool SendMessageInternal(
-            MixpanelMessageEndpoint endpoint, string messageJson)
+            MixpanelMessageEndpoint endpoint, string messageJson, string api_key)
         {
             string messageBody = ToMixpanelMessageFormat(ToBase64(messageJson));
             if (messageBody == null)
@@ -160,7 +160,7 @@ namespace Mixpanel
                 return false;
             }
 
-            return HttpPost(endpoint, messageBody);
+            return HttpPost(endpoint, messageBody, api_key);
         }
 
 #if ASYNC

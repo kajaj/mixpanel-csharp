@@ -19,6 +19,7 @@ namespace Mixpanel
     public sealed partial class MixpanelClient : IMixpanelClient
     {
         private readonly string _token;
+        private readonly string _api_key;
         private readonly MixpanelConfig _config;
 
         /// <summary>
@@ -39,6 +40,30 @@ namespace Mixpanel
         /// <param name="token">
         /// The Mixpanel token associated with your project. You can find your Mixpanel token in the 
         /// project settings dialog in the Mixpanel app. Events without a valid token will be ignored.</param>
+        /// /// <param name="apiKey">
+        /// The Mixpanel api key associated with your project. You can find your Mixpanel token in the 
+        /// project settings dialog in the Mixpanel app. Events without a valid token will be ignored.</param>
+        /// <param name="config">
+        /// Configuration for this particular client. Set properties from this class will override global properties.
+        /// </param>
+        /// <param name="superProperties">
+        /// Object with properties that will be attached to every message for the current mixpanel client.
+        /// If some of the properties are not valid mixpanel properties they will be ignored. Check documentation
+        /// on project page https://github.com/eealeivan/mixpanel-csharp for valid property types.
+        /// </param>
+        public MixpanelClient(string token, string apiKey, MixpanelConfig config = null, object superProperties = null)
+            : this(config, superProperties)
+        {
+            _token = token;
+            _api_key = apiKey;
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="MixpanelClient"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The Mixpanel token associated with your project. You can find your Mixpanel token in the 
+        /// project settings dialog in the Mixpanel app. Events without a valid token will be ignored.</param>
         /// <param name="config">
         /// Configuration for this particular client. Set properties from this class will override global properties.
         /// </param>
@@ -50,23 +75,23 @@ namespace Mixpanel
         public MixpanelClient(string token, MixpanelConfig config = null, object superProperties = null)
             : this(config, superProperties)
         {
-            _token = token;
+          _token = token;
         }
 
-        /// <summary>
-        /// Creates an instance of <see cref="MixpanelClient"/>. This constructor is isually used
-        /// when you want to call only 'Send' and 'SendAsync' methods, because in this case
-        /// token is already specified in each <see cref="MixpanelMessage"/>.
-        /// </summary>
-        /// <param name="config">
-        /// Configuration for this particular client. Set properties from this class will override global properties.
-        /// </param>
-        /// <param name="superProperties">
-        /// Object with properties that will be attached to every message for the current mixpanel client.
-        /// If some of the properties are not valid mixpanel properties they will be ignored. Check documentation
-        /// on project page https://github.com/eealeivan/mixpanel-csharp for valid property types.
-        /// </param>
-        public MixpanelClient(MixpanelConfig config = null, object superProperties = null)
+    /// <summary>
+    /// Creates an instance of <see cref="MixpanelClient"/>. This constructor is isually used
+    /// when you want to call only 'Send' and 'SendAsync' methods, because in this case
+    /// token is already specified in each <see cref="MixpanelMessage"/>.
+    /// </summary>
+    /// <param name="config">
+    /// Configuration for this particular client. Set properties from this class will override global properties.
+    /// </param>
+    /// <param name="superProperties">
+    /// Object with properties that will be attached to every message for the current mixpanel client.
+    /// If some of the properties are not valid mixpanel properties they will be ignored. Check documentation
+    /// on project page https://github.com/eealeivan/mixpanel-csharp for valid property types.
+    /// </param>
+    public MixpanelClient(MixpanelConfig config = null, object superProperties = null)
         {
             _config = config;
             UtcNow = () => DateTime.UtcNow;
@@ -107,7 +132,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreateTrackMessageObject(@event, distinctId, properties),
                 MixpanelMessageEndpoint.Track,
-                MessageKind.Track);
+                MessageKind.Track,
+                this._api_key);
         }
 
 #if ASYNC
@@ -257,7 +283,8 @@ namespace Mixpanel
       return SendMessageInternal(
           () => CreateTrackMessageObject(@event, distinctId, properties),
           MixpanelMessageEndpoint.Import,
-          MessageKind.Track);
+          MessageKind.Track,
+          this._api_key);
     }
 
     #endregion
@@ -287,7 +314,8 @@ namespace Mixpanel
                 return SendMessageInternal(
                     () => CreateAliasMessageObject(distinctId, alias),
                     MixpanelMessageEndpoint.Track,
-                    MessageKind.Alias);
+                    MessageKind.Alias,
+                    this._api_key);
             }
 
     #if ASYNC
@@ -418,7 +446,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleSetMessageObject(distinctId, properties),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleSet);
+                MessageKind.PeopleSet,
+                this._api_key);
         }
 
 #if ASYNC
@@ -559,7 +588,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleSetOnceMessageObject(distinctId, properties),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleSetOnce);
+                MessageKind.PeopleSetOnce,
+                this._api_key);
         }
 
 #if ASYNC
@@ -705,7 +735,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleAddMessageObject(distinctId, properties),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleAdd);
+                MessageKind.PeopleAdd,
+                this._api_key);
         }
 
 #if ASYNC
@@ -855,7 +886,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleAppendMessageObject(distinctId, properties),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleAppend);
+                MessageKind.PeopleAppend,
+                this._api_key);
         }
 
 #if ASYNC
@@ -1001,7 +1033,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleUnionMessageObject(distinctId, properties),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleUnion);
+                MessageKind.PeopleUnion,
+                this._api_key);
         }
 
 #if ASYNC
@@ -1143,7 +1176,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleUnsetMessageObject(distinctId, propertyNames),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleUnset);
+                MessageKind.PeopleUnset,
+                this._api_key);
         }
 
 #if ASYNC
@@ -1265,7 +1299,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleDeleteObject(distinctId),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleDelete);
+                MessageKind.PeopleDelete,
+                this._api_key);
         }
 
 #if ASYNC
@@ -1401,7 +1436,8 @@ namespace Mixpanel
             return SendMessageInternal(
                 () => CreatePeopleTrackChargeMessageObject(distinctId, amount, time),
                 MixpanelMessageEndpoint.Engage,
-                MessageKind.PeopleTrackCharge);
+                MessageKind.PeopleTrackCharge,
+                this._api_key);
         }
 
 #if ASYNC
@@ -1602,7 +1638,7 @@ namespace Mixpanel
                 {
                     var msgs = trackMessages;
                     bool success = SendMessageInternal(
-                        () => GetBatchMessageData(msgs), MixpanelMessageEndpoint.Track, MessageKind.Batch);
+                        () => GetBatchMessageData(msgs), MixpanelMessageEndpoint.Track, MessageKind.Batch, this._api_key);
                     resultInternal.Update(success, msgs);
                 }
             }
@@ -1614,7 +1650,7 @@ namespace Mixpanel
                 {
                     var msgs = engageMessages;
                     bool success = SendMessageInternal(
-                        () => GetBatchMessageData(msgs), MixpanelMessageEndpoint.Engage, MessageKind.Batch);
+                        () => GetBatchMessageData(msgs), MixpanelMessageEndpoint.Engage, MessageKind.Batch, this._api_key);
                     resultInternal.Update(success, msgs);
                 }
             }
@@ -1821,9 +1857,9 @@ namespace Mixpanel
         /// <param name="messageJson">
         /// Raw JSON without any encoding.
         /// </param>
-        public bool SendJson(MixpanelMessageEndpoint endpoint, string messageJson)
+        public bool SendJson(MixpanelMessageEndpoint endpoint, string messageJson, string api_key)
         {
-            return SendMessageInternal(endpoint, messageJson);
+            return SendMessageInternal(endpoint, messageJson, api_key);
         }
 
 #if ASYNC

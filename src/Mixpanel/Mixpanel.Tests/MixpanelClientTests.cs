@@ -75,7 +75,7 @@ namespace Mixpanel.Tests
         {
             return new MixpanelConfig
             {
-                HttpPostFn = (endpoint, data) =>
+                HttpPostFn = (endpoint, data, api_key) =>
                 {
                     _httpPostEntries.Add(new HttpPostEntry(endpoint, data));
                     return true;
@@ -1679,7 +1679,7 @@ namespace Mixpanel.Tests
         [Test]
         public void SendJson_CorrectDataSent()
         {
-            bool result = _client.SendJson(MixpanelMessageEndpoint.Track, CreateJsonMessage());
+            bool result = _client.SendJson(MixpanelMessageEndpoint.Track, CreateJsonMessage(), null);
 
             Assert.That(result, Is.True);
             Assert.That(_httpPostEntries.Single().Endpoint, Is.EqualTo(TrackUrl));
@@ -1689,10 +1689,10 @@ namespace Mixpanel.Tests
         [Test]
         public void SendJson_HttpPostThrowsException_FalseReturned()
         {
-            MixpanelConfig.Global.HttpPostFn = (url, data) => { throw new Exception(); };
+            MixpanelConfig.Global.HttpPostFn = (url, data, api_key) => { throw new Exception(); };
             var client = new MixpanelClient();
 
-            bool result = client.SendJson(MixpanelMessageEndpoint.Track, CreateJsonMessage());
+            bool result = client.SendJson(MixpanelMessageEndpoint.Track, CreateJsonMessage(), null);
             Assert.That(result, Is.False);
         }
 

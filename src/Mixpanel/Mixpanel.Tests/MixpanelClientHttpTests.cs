@@ -50,7 +50,7 @@ namespace Mixpanel.Tests
         {
             return new MixpanelConfig
             {
-                HttpPostFn = (endpoint, data) =>
+                HttpPostFn = (endpoint, data, api_key) =>
                 {
                     _urls.Add(endpoint);
                     return true;
