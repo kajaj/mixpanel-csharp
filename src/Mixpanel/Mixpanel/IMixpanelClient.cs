@@ -116,7 +116,34 @@ namespace Mixpanel
         /// </param>
         MixpanelMessageTest TrackTest(string @event, object distinctId, object properties);
 
-        #endregion Track
+    #endregion Track
+
+        #region Import
+
+        /// <summary>
+        /// Adds an event to Mixpanel by sending a message to 'http://api.mixpanel.com/track/' endpoint.
+        /// Returns true if call was successful, and false otherwise.
+        /// </summary>
+        /// <param name="event">Name of the event.</param>
+        /// <param name="properties">
+        /// Object containg keys and values that will be parsed and sent to Mixpanel. Check documentation
+        /// on project page 'https://github.com/eealeivan/mixpanel-csharp' for supported object containers.
+        /// </param>
+        bool Import(string @event, object properties);
+
+        /// <summary>
+        /// Adds an event to Mixpanel by sending a message to 'http://api.mixpanel.com/track/' endpoint.
+        /// Returns true if call was successful, and false otherwise.
+        /// </summary>
+        /// <param name="event">Name of the event.</param>
+        /// <param name="distinctId">Unique user profile identifier.</param>
+        /// <param name="properties">
+        /// Object containg keys and values that will be parsed and sent to Mixpanel. Check documentation
+        /// on project page 'https://github.com/eealeivan/mixpanel-csharp' for supported object containers.
+        /// </param>
+        bool Import(string @event, object distinctId, object properties);
+
+        #endregion
 
         #region Alias
 
@@ -128,74 +155,74 @@ namespace Mixpanel
         /// <param name="alias">Alias for original user profile identifier.</param>
         bool Alias(object alias);
 
-        /// <summary>
-        /// Creates an alias to given <paramref name="distinctId"/>. 
-        /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
-        /// Returns true if call was successful, and false otherwise.
-        /// </summary>
-        /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        bool Alias(object distinctId, object alias);
+            /// <summary>
+            /// Creates an alias to given <paramref name="distinctId"/>. 
+            /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
+            /// Returns true if call was successful, and false otherwise.
+            /// </summary>
+            /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            bool Alias(object distinctId, object alias);
 
-#if ASYNC
-        /// <summary>
-        /// Creates an alias to 'Distinct ID' that is provided with super properties. 
-        /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
-        /// Returns true if call was successful, and false otherwise.
-        /// </summary>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        Task<bool> AliasAsync(object alias);
+    #if ASYNC
+            /// <summary>
+            /// Creates an alias to 'Distinct ID' that is provided with super properties. 
+            /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
+            /// Returns true if call was successful, and false otherwise.
+            /// </summary>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            Task<bool> AliasAsync(object alias);
 
-        /// <summary>
-        /// Creates an alias to given <paramref name="distinctId"/>. 
-        /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
-        /// Returns true if call was successful, and false otherwise.
-        /// </summary>
-        /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        Task<bool> AliasAsync(object distinctId, object alias);
-#endif
+            /// <summary>
+            /// Creates an alias to given <paramref name="distinctId"/>. 
+            /// Message will be sent to 'http://api.mixpanel.com/track/' endpoint.
+            /// Returns true if call was successful, and false otherwise.
+            /// </summary>
+            /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            Task<bool> AliasAsync(object distinctId, object alias);
+    #endif
 
-        /// <summary>
-        /// Returns a <see cref="MixpanelMessage"/> for 'Alias'. 
-        /// If message can't be created, then null is returned.
-        /// No data will be sent to Mixpanel.
-        /// You can send returned message using <see cref="Send(Mixpanel.MixpanelMessage[])"/> method.
-        /// </summary>
-        /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        MixpanelMessage GetAliasMessage(object distinctId, object alias);
+            /// <summary>
+            /// Returns a <see cref="MixpanelMessage"/> for 'Alias'. 
+            /// If message can't be created, then null is returned.
+            /// No data will be sent to Mixpanel.
+            /// You can send returned message using <see cref="Send(Mixpanel.MixpanelMessage[])"/> method.
+            /// </summary>
+            /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            MixpanelMessage GetAliasMessage(object distinctId, object alias);
 
-        /// <summary>
-        /// Returns a <see cref="MixpanelMessage"/> for 'Alias'. 
-        /// 'Distinct ID' must ne set with super properties.
-        /// If message can't be created, then null is returned.
-        /// No data will be sent to Mixpanel.
-        /// You can send returned message using <see cref="Send(Mixpanel.MixpanelMessage[])"/> method.
-        /// </summary>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        MixpanelMessage GetAliasMessage(object alias);
+            /// <summary>
+            /// Returns a <see cref="MixpanelMessage"/> for 'Alias'. 
+            /// 'Distinct ID' must ne set with super properties.
+            /// If message can't be created, then null is returned.
+            /// No data will be sent to Mixpanel.
+            /// You can send returned message using <see cref="Send(Mixpanel.MixpanelMessage[])"/> method.
+            /// </summary>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            MixpanelMessage GetAliasMessage(object alias);
         
-        /// <summary>
-        /// Returns <see cref="MixpanelMessageTest"/> that contains all steps (message data, JSON,
-        /// base64) of building 'Alias' message. If some error occurs during the process of 
-        /// creating a message it can be found in <see cref="MixpanelMessageTest.Exception"/> property.
-        /// The message will NOT be sent to Mixpanel.
-        /// </summary>
-        /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        MixpanelMessageTest AliasTest(object distinctId, object alias);
+            /// <summary>
+            /// Returns <see cref="MixpanelMessageTest"/> that contains all steps (message data, JSON,
+            /// base64) of building 'Alias' message. If some error occurs during the process of 
+            /// creating a message it can be found in <see cref="MixpanelMessageTest.Exception"/> property.
+            /// The message will NOT be sent to Mixpanel.
+            /// </summary>
+            /// <param name="distinctId">Original unique user profile identifier to create alias for.</param>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            MixpanelMessageTest AliasTest(object distinctId, object alias);
 
-        /// <summary>
-        /// Returns <see cref="MixpanelMessageTest"/> that contains all steps (message data, JSON,
-        /// base64) of building 'Alias' message. If some error occurs during the process of 
-        /// creating a message it can be found in <see cref="MixpanelMessageTest.Exception"/> property.
-        /// The message will NOT be sent to Mixpanel.
-        /// </summary>
-        /// <param name="alias">Alias for original user profile identifier.</param>
-        MixpanelMessageTest AliasTest(object alias);
+            /// <summary>
+            /// Returns <see cref="MixpanelMessageTest"/> that contains all steps (message data, JSON,
+            /// base64) of building 'Alias' message. If some error occurs during the process of 
+            /// creating a message it can be found in <see cref="MixpanelMessageTest.Exception"/> property.
+            /// The message will NOT be sent to Mixpanel.
+            /// </summary>
+            /// <param name="alias">Alias for original user profile identifier.</param>
+            MixpanelMessageTest AliasTest(object alias);
 
-        #endregion Alias
+            #endregion Alias
 
         #region PeopleSet
 

@@ -16,6 +16,12 @@
         /// Used for building http://api.mixpanel.com/engage url.
         /// This url is used for all 'People' messages.
         /// </summary>
-        Engage
-    }
+        Engage,
+
+        /// <summary>
+        /// Used for building http://api.mixpanel.com/import url.
+        /// This url is used for all importing old events.
+        /// </summary>
+        Import
+  }
 }

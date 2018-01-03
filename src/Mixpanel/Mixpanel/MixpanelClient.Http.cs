@@ -12,8 +12,9 @@ namespace Mixpanel
         internal const string UrlFormat = "https://api.mixpanel.com/{0}";
         internal const string EndpointTrack = "track";
         internal const string EndpointEngage = "engage";
+        internal const string EndpointImport = "import";
 
-        private string GetEndpoint(MixpanelMessageEndpoint endpoint)
+    private string GetEndpoint(MixpanelMessageEndpoint endpoint)
         {
             switch (endpoint)
             {
@@ -21,6 +22,8 @@ namespace Mixpanel
                     return EndpointTrack;
                 case MixpanelMessageEndpoint.Engage:
                     return EndpointEngage;
+                case MixpanelMessageEndpoint.Import:
+                    return EndpointImport;
                 default:
                     throw new ArgumentOutOfRangeException("endpoint");
             }
